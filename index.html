@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Davis Islands → Hayesville</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&family=Archivo+Narrow:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --asphalt: #1f2124;
+    --asphalt-2: #2a2d31;
+    --line: #3a3e43;
+    --paper: #f3f0ea;
+    --paper-dim: #cbc7bd;
+    --clay: #c0593b;
+    --pine: #5b7a5e;
+    --charge: #36c98e;
+    --charge-dim: #1c7a55;
+    --amber: #e0a445;
+    --ink: #15171a;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--asphalt);
+    color: var(--paper);
+    font-family: 'Archivo', system-ui, sans-serif;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 0 22px; }
+
+  /* ---- Hero ---- */
+  header {
+    padding: 64px 0 38px;
+    border-bottom: 1px solid var(--line);
+  }
+  .eyebrow {
+    font-family: 'Archivo Narrow', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    font-size: 0.74rem;
+    font-weight: 600;
+    color: var(--clay);
+    margin-bottom: 18px;
+  }
+  h1 {
+    font-family: 'Archivo Narrow', sans-serif;
+    font-weight: 700;
+    font-size: clamp(2.4rem, 8vw, 4.1rem);
+    line-height: 0.98;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+  }
+  h1 .arrow { color: var(--clay); display: inline-block; }
+  .subtitle {
+    margin-top: 20px;
+    color: var(--paper-dim);
+    font-size: 1.02rem;
+    max-width: 56ch;
+  }
+  .stat-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    margin-top: 30px;
+  }
+  .stat .num {
+    font-family: 'Archivo Narrow', sans-serif;
+    font-weight: 700;
+    font-size: 1.75rem;
+    line-height: 1;
+  }
+  .stat .lbl {
+    font-family: 'Archivo Narrow', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: 0.66rem;
+    color: var(--paper-dim);
+    margin-top: 6px;
+  }
+
+  /* ---- Day headers ---- */
+  .day-head {
+    margin: 52px 0 8px;
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+  }
+  .day-tag {
+    font-family: 'Archivo Narrow', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: 0.8rem;
+    color: var(--ink);
+    background: var(--paper);
+    padding: 4px 11px;
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+  .day-meta {
+    font-family: 'Archivo Narrow', sans-serif;
+    color: var(--paper-dim);
+    font-size: 0.92rem;
+    letter-spacing: 0.04em;
+  }
+
+  /* ---- Route line ---- */
+  .route { position: relative; padding-left: 46px; margin-top: 14px; }
+  .route::before {
+    content: "";
+    position: absolute;
+    left: 13px; top: 10px; bottom: 10px;
+    width: 2px;
+    background: repeating-linear-gradient(
+      var(--line) 0 8px, transparent 8px 16px);
+  }
+  .stop { position: relative; padding: 14px 0 22px; }
+  .node {
+    position: absolute;
+    left: -39px; top: 16px;
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    background: var(--asphalt-2);
+    border: 2px solid var(--line);
+    display: grid; place-items: center;
+    font-family: 'Archivo Narrow', sans-serif;
+    font-size: 0.7rem; font-weight: 700;
+    color: var(--paper-dim);
+    z-index: 2;
+  }
+  .stop.charge .node { border-color: var(--charge); color: var(--charge); box-shadow: 0 0 0 4px rgba(54,201,142,0.12); }
+  .stop.endpoint .node { background: var(--clay); border-color: var(--clay); color: #fff; width: 28px; height: 28px; left: -40px; }
+  .stop-card {
+    background: var(--asphalt-2);
+    border: 1px solid var(--line);
+    border-radius: 7px;
+    padding: 16px 18px;
+  }
+  .stop.charge .stop-card { border-left: 3px solid var(--charge); }
+  .stop-top {
+    display: flex; justify-content: space-between;
+    align-items: baseline; gap: 12px; flex-wrap: wrap;
+  }
+  .stop-name {
+    font-family: 'Archivo Narrow', sans-serif;
+    font-weight: 700; font-size: 1.18rem;
+    letter-spacing: 0.01em;
+  }
+  .badges { display: flex; gap: 7px; flex-wrap: wrap; }
+  .badge {
+    font-family: 'Archivo Narrow', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 0.62rem; font-weight: 700;
+    padding: 3px 8px; border-radius: 3px;
+  }
+  .b-charge { background: rgba(54,201,142,0.14); color: var(--charge); }
+  .b-break  { background: rgba(224,164,69,0.14); color: var(--amber); }
+  .b-mile   { background: rgba(255,255,255,0.06); color: var(--paper-dim); }
+  .stop-body { margin-top: 9px; color: var(--paper-dim); font-size: 0.95rem; }
+  .stop-body strong { color: var(--paper); font-weight: 600; }
+  .stop-detail {
+    margin-top: 11px;
+    display: flex; flex-wrap: wrap; gap: 6px 18px;
+    font-size: 0.86rem;
+  }
+  .stop-detail span { color: var(--paper-dim); }
+  .stop-detail b { color: var(--charge); font-weight: 600; }
+
+  /* ---- Callout ---- */
+  .callout {
+    margin: 30px 0;
+    background: linear-gradient(180deg, rgba(224,164,69,0.07), rgba(224,164,69,0.03));
+    border: 1px solid rgba(224,164,69,0.35);
+    border-left: 4px solid var(--amber);
+    border-radius: 7px;
+    padding: 20px 22px;
+  }
+  .callout h3 {
+    font-family: 'Archivo Narrow', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.92rem;
+    color: var(--amber);
+    margin-bottom: 9px;
+  }
+  .callout p { color: var(--paper-dim); font-size: 0.95rem; margin-bottom: 8px; }
+  .callout p:last-child { margin-bottom: 0; }
+  .callout strong { color: var(--paper); font-weight: 600; }
+
+  /* ---- Notes section ---- */
+  .section-label {
+    font-family: 'Archivo Narrow', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-size: 0.72rem; font-weight: 700;
+    color: var(--clay);
+    margin: 50px 0 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--line);
+  }
+  .note-grid { display: grid; gap: 14px; }
+  .note {
+    background: var(--asphalt-2);
+    border: 1px solid var(--line);
+    border-radius: 7px;
+    padding: 15px 17px;
+  }
+  .note h4 {
+    font-family: 'Archivo Narrow', sans-serif;
+    font-size: 1rem; letter-spacing: 0.01em;
+    margin-bottom: 6px; color: var(--paper);
+  }
+  .note p { color: var(--paper-dim); font-size: 0.92rem; }
+
+  footer {
+    margin: 56px 0 40px;
+    padding-top: 22px;
+    border-top: 1px solid var(--line);
+    color: var(--paper-dim);
+    font-size: 0.82rem;
+    font-family: 'Archivo Narrow', sans-serif;
+    letter-spacing: 0.03em;
+  }
+  footer .legend { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 14px; }
+  footer .legend span { display: flex; align-items: center; gap: 7px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+  .dot.c { background: var(--charge); }
+  .dot.b { background: var(--amber); }
+  .dot.e { background: var(--clay); }
+
+  /* ---- Route map ---- */
+  .mapwrap { margin: 38px 0 8px; }
+  .map-eyebrow {
+    font-family: 'Archivo Narrow', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-size: 0.72rem; font-weight: 700;
+    color: var(--clay);
+    margin-bottom: 14px;
+  }
+  .routemap {
+    width: 100%; height: auto;
+    background: var(--asphalt-2);
+    border: 1px solid var(--line);
+    border-radius: 9px;
+    display: block;
+  }
+  .statelabel {
+    fill: #727880;
+    font-family: 'Archivo Narrow', sans-serif;
+    font-size: 14px; font-weight: 700;
+    letter-spacing: 2px;
+  }
+  .land { fill: #2a2d31; stroke: #474c54; stroke-width: 1.4; stroke-linejoin: round; }
+  .land.nc { fill: #2e3135; }
+  .land.fl { fill: #282b2f; }
+  .road { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+  .road.i75 { stroke: var(--clay); stroke-width: 4.5; }
+  .road.mtn { stroke: var(--pine); stroke-width: 4.5; }
+  .road.spur { stroke: var(--charge); stroke-width: 2.5; stroke-dasharray: 4 4; }
+  .ptlabel {
+    fill: var(--paper);
+    font-family: 'Archivo', sans-serif;
+    font-size: 14px; font-weight: 500;
+  }
+  .ptlabel.small { font-size: 12px; fill: var(--paper-dim); }
+  .ptlabel.dest { fill: #e8917a; font-weight: 700; }
+  .ptlabel .num { fill: var(--charge); font-weight: 700; }
+  .dot-charge { fill: var(--charge); stroke: var(--asphalt); stroke-width: 2; }
+  .dot-end { fill: var(--clay); stroke: var(--asphalt); stroke-width: 2; }
+  .dot-dest { fill: #e0593b; stroke: var(--paper); stroke-width: 2.5; }
+  .map-legend {
+    display: flex; flex-wrap: wrap; gap: 16px;
+    margin-top: 12px;
+    font-family: 'Archivo Narrow', sans-serif;
+    font-size: 0.78rem; letter-spacing: 0.04em;
+    color: var(--paper-dim);
+    align-items: center;
+  }
+  .map-legend span { display: flex; align-items: center; gap: 7px; }
+  .ld { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
+  .ld.dot-c { background: var(--charge); }
+  .ld.dot-e { background: var(--clay); }
+  .ld.dot-d { background: #e0593b; border: 1.5px solid var(--paper); }
+  .map-note { margin-left: auto; font-style: italic; opacity: 0.7; }
+
+  @media (max-width: 520px) {
+    header { padding-top: 46px; }
+    .route { padding-left: 38px; }
+    .stat-row { gap: 22px; }
+    .statelabel { font-size: 13px; }
+    .ptlabel { font-size: 13px; }
+    .map-note { margin-left: 0; width: 100%; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">Road Trip · June 2026</div>
+    <h1>Davis Islands <span class="arrow">→</span> Hayesville</h1>
+    <p class="subtitle">Two days up through Georgia to the North Carolina mountains. Driving the Model&nbsp;Y, with Luca along for the ride. Front-loaded so the hard miles land Tuesday and Wednesday is short.</p>
+    <div class="stat-row">
+      <div class="stat"><div class="num">~560 mi</div><div class="lbl">Total distance</div></div>
+      <div class="stat"><div class="num">~9 hrs</div><div class="lbl">Driving time</div></div>
+      <div class="stat"><div class="num">2 days</div><div class="lbl">Atlanta overnight</div></div>
+      <div class="stat"><div class="num">2 stops</div><div class="lbl">Charging (Tue)</div></div>
+    </div>
+  </header>
+
+  <!-- ROUTE MAP -->
+  <div class="mapwrap">
+    <div class="map-eyebrow">The Route</div>
+    <svg viewBox="0 0 720 800" class="routemap" role="img" aria-label="Map of the drive from Tampa through Georgia to Hayesville, North Carolina, shown on real state outlines">
+        <path d="M 89.0,372.6 L 152.7,372.3 L 170.4,390.1 L 347.3,394.1 L 513.0,398.8 L 519.3,411.8 L 534.9,411.5 L 540.6,399.1 L 535.6,387.7 L 547.6,383.0 L 577.4,388.0 L 612.7,390.4 L 620.5,416.8 L 636.8,446.6 L 674.3,485.8 L 731.7,527.7 L 723.2,530.7 L 726.0,550.1 L 750.1,571.9 L 787.6,615.7 L 795.4,629.5 L 794.7,643.5 L 780.5,694.1 L 768.5,695.1 L 755.7,710.8 L 760.0,715.9 L 735.2,727.2 L 725.3,724.6 L 701.2,729.3 L 660.2,731.9 L 648.1,725.6 L 653.8,716.2 L 624.8,689.1 L 602.1,684.0 L 582.3,687.7 L 566.7,672.7 L 562.5,660.3 L 535.6,646.5 L 529.2,637.5 L 533.5,624.4 L 518.6,622.1 L 522.2,629.8 L 508.7,631.8 L 467.7,598.7 L 451.4,590.3 L 490.3,565.8 L 464.8,567.2 L 447.8,574.9 L 430.8,562.8 L 453.5,529.3 L 457.7,501.6 L 442.2,494.9 L 437.2,485.8 L 412.4,483.8 L 383.4,469.1 L 360.1,463.0 L 358.7,454.0 L 342.4,450.7 L 328.9,440.6 L 279.4,427.2 L 236.2,430.2 L 238.3,439.6 L 224.2,437.9 L 170.4,449.3 L 113.1,452.0 L 114.5,445.3 L 101.0,437.3 L 33.8,419.2 L -14.4,411.5 L -57.5,409.5 L -93.6,410.8 L -172.2,416.5 L -153.1,407.5 L -163.0,402.4 L -158.0,392.4 L -187.1,380.7 L -182.8,372.6 L 89.0,372.6 Z" class="land fl"/>
+        <path d="M 397.6,127.9 L 370.0,140.9 L 367.9,147.3 L 411.0,160.3 L 424.5,159.3 L 444.3,172.7 L 448.5,179.8 L 469.1,192.5 L 498.8,200.2 L 515.8,211.6 L 550.5,222.0 L 549.0,229.0 L 571.7,240.4 L 606.4,249.7 L 614.9,259.8 L 616.3,272.9 L 634.0,277.2 L 654.5,293.6 L 655.2,304.0 L 684.9,309.4 L 653.1,330.1 L 647.4,340.8 L 634.0,350.2 L 632.6,359.9 L 618.4,364.3 L 612.7,390.4 L 577.4,388.0 L 547.6,383.0 L 535.6,387.7 L 540.6,399.1 L 534.9,411.5 L 519.3,411.8 L 513.0,398.8 L 347.3,394.1 L 170.4,390.1 L 152.7,372.3 L 138.5,355.6 L 147.7,339.5 L 135.0,321.1 L 146.3,310.7 L 145.6,303.0 L 167.6,295.3 L 152.7,291.6 L 158.3,285.6 L 144.2,275.9 L 129.3,258.8 L 97.5,181.4 L 74.8,128.9 L 241.2,128.5 L 331.8,128.9 L 397.6,127.9 Z" class="land"/>
+        <path d="M 672.9,32.4 L 761.4,33.4 L 862.6,33.8 L 1333.3,33.1 L 1348.1,57.5 L 1312.0,55.2 L 1307.1,58.2 L 1263.2,61.9 L 1256.8,65.2 L 1227.8,66.3 L 1229.2,70.6 L 1264.6,67.6 L 1269.6,70.3 L 1308.5,67.3 L 1321.2,72.9 L 1344.6,70.6 L 1353.1,85.3 L 1345.3,92.4 L 1329.7,93.0 L 1297.2,108.1 L 1254.0,108.8 L 1246.9,119.2 L 1265.3,129.5 L 1280.2,131.5 L 1252.6,148.6 L 1229.2,146.6 L 1188.2,148.3 L 1159.9,152.0 L 1115.3,163.7 L 1079.9,179.1 L 1061.5,198.5 L 1034.6,194.2 L 987.9,198.2 L 841.4,139.9 L 696.3,138.9 L 698.4,131.9 L 678.6,121.5 L 665.1,125.2 L 664.4,118.8 L 505.2,115.8 L 469.8,118.2 L 442.2,123.8 L 397.6,127.9 L 331.8,128.9 L 241.2,128.5 L 244.7,114.1 L 270.2,112.8 L 280.1,102.7 L 311.9,93.7 L 347.3,93.4 L 379.2,84.0 L 412.4,80.6 L 440.8,66.9 L 458.5,62.9 L 462.0,68.9 L 513.0,57.2 L 536.3,59.6 L 552.6,48.2 L 576.7,45.2 L 582.3,30.8 L 672.9,32.4 Z" class="land nc"/>
+      <text x="360" y="320" class="statelabel">GEORGIA</text>
+      <text x="250" y="100" class="statelabel">N. CAROLINA</text>
+      <text x="470" y="500" class="statelabel">FLORIDA</text>
+      <polyline points="481.5,559.0 388.4,390.8 330.3,260.0 230.8,198.9" class="road i75"/>
+      <polyline points="230.8,198.9 316.1,124.9" class="road mtn"/>
+      <polyline points="316.1,124.9 278.6,120.0" class="road spur"/>
+      <circle cx="481.5" cy="559.0" r="9" class="dot-end"/>
+      <text x="496.5" y="563.0" class="ptlabel">Davis Islands &middot; Start</text>
+      <circle cx="388.4" cy="390.8" r="8" class="dot-charge"/>
+      <text x="403.4" y="394.8" class="ptlabel"><tspan class="num">1</tspan> Lake Park</text>
+      <circle cx="330.3" cy="260.0" r="8" class="dot-charge"/>
+      <text x="345.3" y="264.0" class="ptlabel"><tspan class="num">2</tspan> Macon</text>
+      <circle cx="230.8" cy="198.9" r="9" class="dot-end"/>
+      <text x="215.8" y="202.9" class="ptlabel" text-anchor="end">Atlanta &#10022;</text>
+      <circle cx="278.6" cy="120.0" r="6" class="dot-charge"/>
+      <text x="266.6" y="111.0" class="ptlabel small" text-anchor="end">Murphy &#9889;</text>
+      <circle cx="316.1" cy="124.9" r="10" class="dot-dest"/>
+      <text x="332.1" y="128.9" class="ptlabel dest">Hayesville</text>
+    </svg>
+    <div class="map-legend">
+      <span><span class="ld dot-c"></span> Charging</span>
+      <span><span class="ld dot-e"></span> Stop / overnight</span>
+      <span><span class="ld dot-d"></span> Destination</span>
+      <span class="map-note">Eastern NC &amp; panhandle run off-frame</span>
+    </div>
+  </div>
+
+  <!-- DAY 1 -->
+  <div class="day-head">
+    <span class="day-tag">Tuesday</span>
+    <span class="day-meta">Davis Islands → Atlanta · ~460 mi · ~7 hrs</span>
+  </div>
+  <p class="subtitle" style="margin-top:10px;">Leave with a <strong style="color:var(--paper)">full 100% charge</strong> — done overnight, costs no time. That's ~280–300 highway miles before the first plug-in.</p>
+
+  <div class="route">
+
+    <div class="stop endpoint">
+      <div class="node">●</div>
+      <div class="stop-card">
+        <div class="stop-top">
+          <span class="stop-name">Davis Islands, Tampa</span>
+          <div class="badges"><span class="badge b-mile">Mile 0</span></div>
+        </div>
+        <div class="stop-body">Depart at <strong>100%</strong>. Set the charge slider to full the night before — the 80% rule is for en-route stops, not the start.</div>
+      </div>
+    </div>
+
+    <div class="stop charge">
+      <div class="node">1</div>
+      <div class="stop-card">
+        <div class="stop-top">
+          <span class="stop-name">Lake Park, GA</span>
+          <div class="badges">
+            <span class="badge b-charge">Charge</span>
+            <span class="badge b-break">Kid break</span>
+            <span class="badge b-mile">~200 mi · 3 hrs</span>
+          </div>
+        </div>
+        <div class="stop-body">Best first stop, and the timing lands right when Luca needs out of the seat. Newer site, <strong>16 fast V4 stalls</strong> — low odds of a queue. Winn-Dixie restrooms on site, <strong>Chick-fil-A across the street</strong>. About as toddler-friendly as roadside gets.</div>
+        <div class="stop-detail">
+          <span>Charge to <b>~80%</b></span>
+          <span>Eat + run around</span>
+          <span>Plan <b>~40 min</b></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="stop charge">
+      <div class="node">2</div>
+      <div class="stop-card">
+        <div class="stop-top">
+          <span class="stop-name">Macon, GA <span style="color:var(--paper-dim);font-weight:400;font-size:0.85rem;">(downtown)</span></span>
+          <div class="badges">
+            <span class="badge b-charge">Charge</span>
+            <span class="badge b-break">Quick stop</span>
+            <span class="badge b-mile">~360 mi · 5.5 hrs</span>
+          </div>
+        </div>
+        <div class="stop-body">Heads up: this charger is <strong>downtown, not on I-75</strong> — the car's nav sends you ~4 min off I-16 at Exit 2 (MLK Jr. Blvd). The detour is minor and stalls are usually empty. Diaper change + leg stretch, no full meal needed.</div>
+        <div class="stop-detail">
+          <span>Charge to <b>~70%</b></span>
+          <span>Quick reset</span>
+          <span>Plan <b>~20–25 min</b></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="stop endpoint">
+      <div class="node">●</div>
+      <div class="stop-card">
+        <div class="stop-top">
+          <span class="stop-name">Atlanta — Thompson, Buckhead</span>
+          <div class="badges"><span class="badge b-mile">~460 mi</span></div>
+        </div>
+        <div class="stop-body">Arrive Tuesday evening with margin to spare. <strong>Top up to 100% before leaving Wednesday</strong> — Supercharger at Lenox Square is right in Buckhead, walking distance to dinner. This is your last reliable fast-charge before the mountains.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- CHARGING DESERT CALLOUT -->
+  <div class="callout">
+    <h3>⚠ No Superchargers in the mountains — but you have two backstops</h3>
+    <p>There is <strong>no Supercharger near Hayesville</strong>, and nothing fast in that whole corner. <strong>Leave Atlanta at 100%</strong> — from full you reach Hayesville (~100 mi) easily. The good news: you have two ways to keep topped up during the stay, so this isn't the dead zone it first looks like.</p>
+    <p><strong>1 · The house outlet (primary).</strong> A standard wall outlet adds ~3–4 mi/hr — left plugged in day and night, that's ~60–80 mi/day and creeps up to ~80% over a few days. This works <em>as long as daily driving stays modest.</em> Heavy running-around days can out-pace it, so watch the trend rather than assuming it always recovers overnight. <strong>Checking on a 240V outlet at the house</strong> — if it's there, bring the Mobile Connector + adapter and the house becomes a real overnight charge.</p>
+    <p><strong>2 · Harrah's Cherokee Valley River, Murphy (fast catch-up).</strong> ~25 min from Hayesville. <strong>24 free Tesla Destination chargers, Level 2 (~40–50 mi/hr)</strong> — not a Supercharger, but park for dinner with Luca one evening and come back with <strong>80–100+ mi added</strong>. This is your reset if the house outlet falls behind, and it solves the drive home.</p>
+    <p><strong>For the drive home:</strong> top up (house + a Murphy visit if needed) so you leave with enough to reach the I-75 Superchargers (Calhoun / Buc-ee's) — possibly 60–90 mi out. Go with a comfortable buffer; a few of Murphy's ports are sometimes down, so don't roll in on fumes.</p>
+  </div>
+
+  <!-- DAY 2 -->
+  <div class="day-head">
+    <span class="day-tag">Wednesday</span>
+    <span class="day-meta">Atlanta → Hayesville · ~100 mi · ~2 hrs</span>
+  </div>
+  <p class="subtitle" style="margin-top:10px;">The reward leg — short and scenic, up through the North Georgia mountains. No charging stop needed if you left Atlanta full.</p>
+
+  <div class="route">
+    <div class="stop charge">
+      <div class="node">3</div>
+      <div class="stop-card">
+        <div class="stop-top">
+          <span class="stop-name">Top up — Lenox Square, Buckhead</span>
+          <div class="badges"><span class="badge b-charge">Charge to 100%</span></div>
+        </div>
+        <div class="stop-body">Before you roll out. Last fast-charge before the desert. Full battery = comfortable buffer for local driving around Hayesville and Hiawassee all week.</div>
+      </div>
+    </div>
+    <div class="stop endpoint">
+      <div class="node">●</div>
+      <div class="stop-card">
+        <div class="stop-top">
+          <span class="stop-name">Hayesville, NC</span>
+          <div class="badges"><span class="badge b-mile">Arrive</span></div>
+        </div>
+        <div class="stop-body">Clay County, far western NC. Cooler at elevation than Tampa — <strong>pack warm layers for the evenings.</strong> Cell coverage is spotty, so download anything you need offline before you arrive.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUICK NOTES -->
+  <div class="section-label">Before you go</div>
+  <div class="note-grid">
+    <div class="note">
+      <h4>Charge to 100% overnight</h4>
+      <p>Both the night before departure and the night before leaving Atlanta. Free range while you sleep — no reason not to.</p>
+    </div>
+    <div class="note">
+      <h4>House outlet: keep it plugged in</h4>
+      <p>A standard outlet nets ~60–80 mi/day if plugged in continuously and daily driving stays light. Checking on a 240V outlet at the house — bring the Mobile Connector + adapter in case it's there.</p>
+    </div>
+    <div class="note">
+      <h4>Download Luca's shows offline</h4>
+      <p>Bluey, on the tablet, downloaded — not streaming. Mountain dead zones make a streaming-dependent tablet useless with a restless toddler.</p>
+    </div>
+    <div class="note">
+      <h4>Pack layers</h4>
+      <p>Hayesville sits at elevation; June evenings run noticeably cooler than Tampa. Light jackets for all three of you.</p>
+    </div>
+    <div class="note">
+      <h4>Murphy casino = fast catch-up</h4>
+      <p>Harrah's Cherokee Valley River, ~25 min away. 24 free Level 2 chargers (~40–50 mi/hr). Park for dinner one evening, gain 80–100+ mi. Your reset if the house outlet falls behind — and it covers the drive home.</p>
+    </div>
+    <div class="note">
+      <h4>Dogs boarded</h4>
+      <p>Confirm boarding drop-off and pack their food, meds, and bedding.</p>
+    </div>
+  </div>
+
+  <footer>
+    <div class="legend">
+      <span><span class="dot c"></span> Charging stop</span>
+      <span><span class="dot b"></span> Kid break</span>
+      <span><span class="dot e"></span> Endpoint</span>
+    </div>
+    Distances and times are estimates — read live charger availability and pricing off the car's nav on the day. Plan built June 2026.
+  </footer>
+
+</div>
+</body>
+</html>
