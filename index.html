@@ -204,6 +204,35 @@
     border-bottom: 1px solid var(--line);
   }
   .note-grid { display: grid; gap: 14px; }
+
+  /* optional stops */
+  .optstop {
+    background: var(--asphalt-2);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--amber);
+    border-radius: 7px;
+    padding: 14px 16px;
+    margin-bottom: 12px;
+  }
+  .optstop .ost-top { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+  .optstop h4 { font-family: 'Archivo Narrow', sans-serif; font-size: 1.04rem; color: var(--paper); }
+  .optstop .where { font-family: 'Archivo Narrow', sans-serif; font-size: 0.74rem; color: var(--paper-dim); letter-spacing: 0.04em; }
+  .optstop p { color: var(--paper-dim); font-size: 0.9rem; margin-top: 6px; }
+  .optstop.best { border-left-color: var(--charge); }
+  .optstop .pick { font-family:'Archivo Narrow',sans-serif; text-transform:uppercase; letter-spacing:0.1em; font-size:0.6rem; font-weight:700; color:var(--charge); background:rgba(54,201,142,0.14); padding:2px 7px; border-radius:3px; }
+
+  /* address table */
+  .addr-table { width: 100%; border-collapse: collapse; margin-top: 6px; font-size: 0.86rem; }
+  .addr-table th { text-align: left; font-family:'Archivo Narrow',sans-serif; text-transform:uppercase; letter-spacing:0.08em; font-size:0.66rem; color:var(--clay); padding: 6px 8px; border-bottom: 1px solid var(--line); }
+  .addr-table td { padding: 8px; border-bottom: 1px solid var(--line); color: var(--paper-dim); vertical-align: top; }
+  .addr-table td.stop-c { color: var(--paper); font-weight: 600; white-space: nowrap; }
+  .addr-table td.geo { font-family: monospace; font-size: 0.8rem; color: #8aa88d; white-space: nowrap; }
+  .addr-table tr.dayrow td { background: rgba(255,255,255,0.03); font-family:'Archivo Narrow',sans-serif; text-transform:uppercase; letter-spacing:0.1em; font-size:0.68rem; color:var(--paper-dim); font-weight:700; }
+  .table-note { font-size: 0.82rem; color: var(--paper-dim); margin-top: 10px; font-style: italic; }
+  @media (max-width: 520px) {
+    .addr-table .hide-sm { display: none; }
+    .addr-table { font-size: 0.8rem; }
+  }
   .note {
     background: var(--asphalt-2);
     border: 1px solid var(--line);
@@ -244,11 +273,20 @@
     margin-bottom: 14px;
   }
   .routemap {
-    width: 100%; height: auto;
     background: var(--asphalt-2);
     border: 1px solid var(--line);
     border-radius: 9px;
     display: block;
+    margin: 0 auto;
+  }
+  .routemap.legA { width: auto; max-width: 100%; max-height: 560px; height: auto; }
+  .routemap.legB { width: 100%; max-width: 100%; height: auto; }
+  .map-caption {
+    font-family: 'Archivo', sans-serif;
+    font-size: 0.9rem;
+    color: var(--paper-dim);
+    margin-bottom: 12px;
+    margin-top: -6px;
   }
   .statelabel {
     fill: #727880;
@@ -263,6 +301,15 @@
   .road.i75 { stroke: var(--clay); stroke-width: 4.5; }
   .road.mtn { stroke: var(--pine); stroke-width: 4.5; }
   .road.spur { stroke: var(--charge); stroke-width: 2.5; stroke-dasharray: 4 4; }
+  .shield { stroke: var(--asphalt); stroke-width: 1.5; }
+  .shield.i75 { fill: var(--clay); }
+  .shield.ga { fill: var(--pine); }
+  .shield.nc { fill: #3a6ea5; }
+  .shield-txt { fill: #fff; font-family: 'Archivo Narrow', sans-serif; font-weight: 700; font-size: 12px; letter-spacing: 0.5px; }
+  .leader { stroke-width: 1.3; }
+  .leader.i75 { stroke: var(--clay); }
+  .leader.ga { stroke: var(--pine); }
+  .leader.nc { stroke: #3a6ea5; }
   .ptlabel {
     fill: var(--paper);
     font-family: 'Archivo', sans-serif;
@@ -270,10 +317,12 @@
   }
   .ptlabel.small { font-size: 12px; fill: var(--paper-dim); }
   .ptlabel.dest { fill: #e8917a; font-weight: 700; }
+  .ptlabel.town { font-size: 11px; fill: #a6acb4; font-weight: 500; }
   .ptlabel .num { fill: var(--charge); font-weight: 700; }
   .dot-charge { fill: var(--charge); stroke: var(--asphalt); stroke-width: 2; }
   .dot-end { fill: var(--clay); stroke: var(--asphalt); stroke-width: 2; }
   .dot-dest { fill: #e0593b; stroke: var(--paper); stroke-width: 2.5; }
+  .dot-town { fill: #6f8f72; stroke: var(--asphalt); stroke-width: 1.5; }
   .map-legend {
     display: flex; flex-wrap: wrap; gap: 16px;
     margin-top: 12px;
@@ -286,6 +335,7 @@
   .ld { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
   .ld.dot-c { background: var(--charge); }
   .ld.dot-e { background: var(--clay); }
+  .ld.dot-t { background: #6f8f72; }
   .ld.dot-d { background: #e0593b; border: 1.5px solid var(--paper); }
   .map-note { margin-left: auto; font-style: italic; opacity: 0.7; }
 
@@ -305,46 +355,80 @@
   <header>
     <div class="eyebrow">Road Trip · June 2026</div>
     <h1>Davis Islands <span class="arrow">→</span> Hayesville</h1>
-    <p class="subtitle">Two days up through Georgia to the North Carolina mountains. Driving the Model&nbsp;Y, with Luca along for the ride. Front-loaded so the hard miles land Tuesday and Wednesday is short.</p>
+    <p class="subtitle">Two days up to the North Carolina mountains — Tampa to Atlanta on I-75, then the GA-515 highway through Blue Ridge and the valley towns into Hayesville. Driving the Model&nbsp;Y, with Luca along for the ride. Front-loaded so the hard miles land Tuesday and Wednesday stays easy.</p>
     <div class="stat-row">
-      <div class="stat"><div class="num">~560 mi</div><div class="lbl">Total distance</div></div>
-      <div class="stat"><div class="num">~9 hrs</div><div class="lbl">Driving time</div></div>
+      <div class="stat"><div class="num">~580 mi</div><div class="lbl">Total distance</div></div>
+      <div class="stat"><div class="num">~9.5 hrs</div><div class="lbl">Driving time</div></div>
       <div class="stat"><div class="num">2 days</div><div class="lbl">Atlanta overnight</div></div>
       <div class="stat"><div class="num">2 stops</div><div class="lbl">Charging (Tue)</div></div>
     </div>
   </header>
 
-  <!-- ROUTE MAP -->
+  <!-- ROUTE MAPS (two legs) -->
   <div class="mapwrap">
-    <div class="map-eyebrow">The Route</div>
-    <svg viewBox="0 0 720 800" class="routemap" role="img" aria-label="Map of the drive from Tampa through Georgia to Hayesville, North Carolina, shown on real state outlines">
-        <path d="M 89.0,372.6 L 152.7,372.3 L 170.4,390.1 L 347.3,394.1 L 513.0,398.8 L 519.3,411.8 L 534.9,411.5 L 540.6,399.1 L 535.6,387.7 L 547.6,383.0 L 577.4,388.0 L 612.7,390.4 L 620.5,416.8 L 636.8,446.6 L 674.3,485.8 L 731.7,527.7 L 723.2,530.7 L 726.0,550.1 L 750.1,571.9 L 787.6,615.7 L 795.4,629.5 L 794.7,643.5 L 780.5,694.1 L 768.5,695.1 L 755.7,710.8 L 760.0,715.9 L 735.2,727.2 L 725.3,724.6 L 701.2,729.3 L 660.2,731.9 L 648.1,725.6 L 653.8,716.2 L 624.8,689.1 L 602.1,684.0 L 582.3,687.7 L 566.7,672.7 L 562.5,660.3 L 535.6,646.5 L 529.2,637.5 L 533.5,624.4 L 518.6,622.1 L 522.2,629.8 L 508.7,631.8 L 467.7,598.7 L 451.4,590.3 L 490.3,565.8 L 464.8,567.2 L 447.8,574.9 L 430.8,562.8 L 453.5,529.3 L 457.7,501.6 L 442.2,494.9 L 437.2,485.8 L 412.4,483.8 L 383.4,469.1 L 360.1,463.0 L 358.7,454.0 L 342.4,450.7 L 328.9,440.6 L 279.4,427.2 L 236.2,430.2 L 238.3,439.6 L 224.2,437.9 L 170.4,449.3 L 113.1,452.0 L 114.5,445.3 L 101.0,437.3 L 33.8,419.2 L -14.4,411.5 L -57.5,409.5 L -93.6,410.8 L -172.2,416.5 L -153.1,407.5 L -163.0,402.4 L -158.0,392.4 L -187.1,380.7 L -182.8,372.6 L 89.0,372.6 Z" class="land fl"/>
-        <path d="M 397.6,127.9 L 370.0,140.9 L 367.9,147.3 L 411.0,160.3 L 424.5,159.3 L 444.3,172.7 L 448.5,179.8 L 469.1,192.5 L 498.8,200.2 L 515.8,211.6 L 550.5,222.0 L 549.0,229.0 L 571.7,240.4 L 606.4,249.7 L 614.9,259.8 L 616.3,272.9 L 634.0,277.2 L 654.5,293.6 L 655.2,304.0 L 684.9,309.4 L 653.1,330.1 L 647.4,340.8 L 634.0,350.2 L 632.6,359.9 L 618.4,364.3 L 612.7,390.4 L 577.4,388.0 L 547.6,383.0 L 535.6,387.7 L 540.6,399.1 L 534.9,411.5 L 519.3,411.8 L 513.0,398.8 L 347.3,394.1 L 170.4,390.1 L 152.7,372.3 L 138.5,355.6 L 147.7,339.5 L 135.0,321.1 L 146.3,310.7 L 145.6,303.0 L 167.6,295.3 L 152.7,291.6 L 158.3,285.6 L 144.2,275.9 L 129.3,258.8 L 97.5,181.4 L 74.8,128.9 L 241.2,128.5 L 331.8,128.9 L 397.6,127.9 Z" class="land"/>
-        <path d="M 672.9,32.4 L 761.4,33.4 L 862.6,33.8 L 1333.3,33.1 L 1348.1,57.5 L 1312.0,55.2 L 1307.1,58.2 L 1263.2,61.9 L 1256.8,65.2 L 1227.8,66.3 L 1229.2,70.6 L 1264.6,67.6 L 1269.6,70.3 L 1308.5,67.3 L 1321.2,72.9 L 1344.6,70.6 L 1353.1,85.3 L 1345.3,92.4 L 1329.7,93.0 L 1297.2,108.1 L 1254.0,108.8 L 1246.9,119.2 L 1265.3,129.5 L 1280.2,131.5 L 1252.6,148.6 L 1229.2,146.6 L 1188.2,148.3 L 1159.9,152.0 L 1115.3,163.7 L 1079.9,179.1 L 1061.5,198.5 L 1034.6,194.2 L 987.9,198.2 L 841.4,139.9 L 696.3,138.9 L 698.4,131.9 L 678.6,121.5 L 665.1,125.2 L 664.4,118.8 L 505.2,115.8 L 469.8,118.2 L 442.2,123.8 L 397.6,127.9 L 331.8,128.9 L 241.2,128.5 L 244.7,114.1 L 270.2,112.8 L 280.1,102.7 L 311.9,93.7 L 347.3,93.4 L 379.2,84.0 L 412.4,80.6 L 440.8,66.9 L 458.5,62.9 L 462.0,68.9 L 513.0,57.2 L 536.3,59.6 L 552.6,48.2 L 576.7,45.2 L 582.3,30.8 L 672.9,32.4 Z" class="land nc"/>
-      <text x="360" y="320" class="statelabel">GEORGIA</text>
-      <text x="250" y="100" class="statelabel">N. CAROLINA</text>
-      <text x="470" y="500" class="statelabel">FLORIDA</text>
-      <polyline points="481.5,559.0 388.4,390.8 330.3,260.0 230.8,198.9" class="road i75"/>
-      <polyline points="230.8,198.9 316.1,124.9" class="road mtn"/>
-      <polyline points="316.1,124.9 278.6,120.0" class="road spur"/>
-      <circle cx="481.5" cy="559.0" r="9" class="dot-end"/>
-      <text x="496.5" y="563.0" class="ptlabel">Davis Islands &middot; Start</text>
-      <circle cx="388.4" cy="390.8" r="8" class="dot-charge"/>
-      <text x="403.4" y="394.8" class="ptlabel"><tspan class="num">1</tspan> Lake Park</text>
-      <circle cx="330.3" cy="260.0" r="8" class="dot-charge"/>
-      <text x="345.3" y="264.0" class="ptlabel"><tspan class="num">2</tspan> Macon</text>
-      <circle cx="230.8" cy="198.9" r="9" class="dot-end"/>
-      <text x="215.8" y="202.9" class="ptlabel" text-anchor="end">Atlanta &#10022;</text>
-      <circle cx="278.6" cy="120.0" r="6" class="dot-charge"/>
-      <text x="266.6" y="111.0" class="ptlabel small" text-anchor="end">Murphy &#9889;</text>
-      <circle cx="316.1" cy="124.9" r="10" class="dot-dest"/>
-      <text x="332.1" y="128.9" class="ptlabel dest">Hayesville</text>
+    <div class="map-eyebrow">The Route &middot; Leg 1 of 2</div>
+    <div class="map-caption">Tuesday &middot; Davis Islands &rarr; Atlanta &middot; I-75 &middot; ~460 mi</div>
+    <svg viewBox="0 0 279 670" class="routemap legA" role="img" aria-label="Top-down map of the I-75 leg from Tampa to Atlanta">
+<path d="M 2.5,309.8 L 38.1,309.3 L 48.0,333.7 L 146.9,339.3 L 239.5,345.7 L 243.1,363.6 L 251.8,363.2 L 254.9,346.2 L 252.2,330.5 L 258.9,324.1 L 275.5,331.0 L 295.3,334.2 L 299.6,370.5 L 308.7,411.5 L 329.7,465.3 L 361.7,522.8 L 357.0,527.0 L 358.6,553.6 L 372.0,583.5 L 393.0,643.8 L 397.3,662.7 L 396.9,682.0 L 389.0,751.5 L 382.3,752.8 L 375.2,774.5 L 377.6,781.4 L 363.7,797.0 L 358.2,793.3 L 344.7,799.8 L 321.8,803.5 L 315.1,794.7 L 318.2,781.8 L 302.0,744.6 L 289.3,737.7 L 278.3,742.7 L 269.6,722.0 L 267.2,705.0 L 252.2,686.1 L 248.6,673.7 L 251.0,655.8 L 242.7,652.6 L 244.6,663.1 L 237.1,665.9 L 214.2,620.3 L 205.1,608.8 L 226.8,575.3 L 212.6,577.1 L 203.1,587.7 L 193.6,571.1 L 206.3,525.1 L 208.6,486.9 L 199.9,477.7 L 197.2,465.3 L 183.3,462.5 L 167.1,442.3 L 154.0,434.0 L 153.3,421.6 L 144.2,417.0 L 136.6,403.2 L 109.0,384.8 L 84.8,388.9 L 86.0,401.8 L 78.1,399.5 L 48.0,415.2 L 16.0,418.8 L 16.8,409.6 L 9.3,398.6 L -28.3,373.8 L -55.2,363.2 L -79.3,360.4 L -99.5,362.3 L -143.4,370.1 L -132.8,357.7 L -138.3,350.8 L -135.5,337.0 L -151.7,320.8 L -149.4,309.8 L 2.5,309.8 Z" class="land fl"/>
+<path d="M 175.0,-26.5 L 159.6,-8.6 L 158.4,0.2 L 182.5,18.1 L 190.0,16.7 L 201.1,35.1 L 203.5,44.8 L 215.0,62.3 L 231.6,72.9 L 241.1,88.5 L 260.5,102.8 L 259.7,112.4 L 272.3,128.1 L 291.7,141.0 L 296.5,154.8 L 297.3,172.7 L 307.1,178.7 L 318.6,201.2 L 319.0,215.5 L 335.6,222.9 L 317.8,251.4 L 314.7,266.1 L 307.1,279.0 L 306.3,292.3 L 298.4,298.3 L 295.3,334.2 L 275.5,331.0 L 258.9,324.1 L 252.2,330.5 L 254.9,346.2 L 251.8,363.2 L 243.1,363.6 L 239.5,345.7 L 146.9,339.3 L 48.0,333.7 L 38.1,309.3 L 30.2,286.3 L 35.4,264.3 L 28.3,239.0 L 34.6,224.7 L 34.2,214.1 L 46.4,203.5 L 38.1,198.5 L 41.3,190.2 L 33.4,176.8 L 25.1,153.4 L 7.3,47.1 L -5.4,-25.1 L 87.6,-25.6 L 138.2,-25.1 L 175.0,-26.5 Z" class="land"/>
+<text x="95" y="300" class="statelabel">GEORGIA</text>
+<text x="150" y="520" class="statelabel">FLORIDA</text>
+<polyline points="221.9,565.8 169.9,334.8 137.4,155.0 81.8,71.0" class="road i75"/>
+<circle cx="221.9" cy="565.8" r="8" class="dot-end"/>
+<text x="209.9" y="569.8" text-anchor="end" class="ptlabel">Davis Islands · Start</text>
+<circle cx="169.9" cy="334.8" r="7" class="dot-charge"/>
+<text x="182.9" y="338.8" class="ptlabel"><tspan class="num">1</tspan> Lake Park</text>
+<circle cx="137.4" cy="155.0" r="7" class="dot-charge"/>
+<text x="150.4" y="159.0" class="ptlabel"><tspan class="num">2</tspan> Macon</text>
+<circle cx="81.8" cy="71.0" r="8" class="dot-end"/>
+<text x="94.8" y="75.0" class="ptlabel dest">Atlanta</text>
+<line x1="139.9" y1="245" x2="153.65" y2="245" class="leader i75"/>
+<rect x="100.9" y="235.5" width="38" height="19" rx="4" class="shield i75"/><text x="119.9" y="248.8" text-anchor="middle" class="shield-txt">I-75</text>
+    </svg>
+  </div>
+
+  <div class="mapwrap">
+    <div class="map-eyebrow">The Route &middot; Leg 2 of 2</div>
+    <div class="map-caption">Wednesday &middot; Atlanta &rarr; Hayesville &middot; GA-515 / US-76 &middot; ~120 mi</div>
+    <svg viewBox="0 0 467 333" class="routemap legB" role="img" aria-label="Zoomed map of the mountain corridor from Atlanta through Blue Ridge and Blairsville to Hayesville">
+<path d="M 489.8,128.6 L 437.2,192.7 L 433.1,223.9 L 515.4,288.0 L 541.1,283.1 L 578.8,348.8 L 586.9,383.3 L 626.1,445.8 L 682.7,483.6 L 715.1,539.4 L 781.2,590.4 L 778.5,624.9 L 821.7,680.7 L 887.8,726.7 L 904.0,776.0 L 906.7,840.1 L 940.4,861.5 L 979.6,942.0 L 980.9,992.9 L 1037.6,1019.2 L 976.9,1121.1 L 966.1,1173.6 L 940.4,1219.7 L 937.7,1267.3 L 910.7,1288.7 L 900.0,1416.8 L 832.5,1405.3 L 775.8,1380.7 L 752.9,1403.7 L 762.3,1459.5 L 751.5,1520.3 L 721.9,1522.0 L 709.7,1457.9 L 394.0,1434.9 L 56.7,1415.2 L 23.0,1328.1 L -4.0,1245.9 L 13.5,1167.1 L -10.8,1076.7 L 10.8,1025.8 L 9.5,988.0 L 51.3,950.2 L 23.0,932.1 L 33.8,902.5 L 6.8,854.9 L -21.6,771.1 L -82.3,391.5 L -125.5,133.6 L 191.6,131.9 L 364.3,133.6 L 489.8,128.6 Z" class="land"/>
+<path d="M 1014.6,-339.6 L 1183.3,-334.7 L 1376.2,-333.1 L 2273.5,-336.3 L 2301.8,-216.4 L 2233.0,-227.9 L 2223.5,-213.1 L 2139.9,-195.0 L 2127.7,-178.6 L 2072.4,-173.7 L 2075.1,-152.3 L 2142.6,-167.1 L 2152.0,-154.0 L 2226.2,-168.8 L 2250.5,-140.8 L 2295.0,-152.3 L 2311.2,-80.0 L 2296.4,-45.5 L 2266.7,-42.2 L 2204.6,31.7 L 2122.3,35.0 L 2108.8,85.9 L 2143.9,136.9 L 2172.3,146.7 L 2119.6,230.5 L 2075.1,220.7 L 1996.9,228.9 L 1942.9,246.9 L 1857.9,304.5 L 1790.4,380.0 L 1755.4,475.3 L 1704.1,454.0 L 1615.0,473.7 L 1335.7,187.8 L 1059.2,182.9 L 1063.2,148.4 L 1025.4,97.4 L 999.8,115.5 L 998.4,84.3 L 694.9,69.5 L 627.4,81.0 L 574.8,108.9 L 489.8,128.6 L 364.3,133.6 L 191.6,131.9 L 198.4,61.3 L 246.9,54.7 L 265.8,5.4 L 326.5,-38.9 L 394.0,-40.6 L 454.7,-86.6 L 518.1,-103.0 L 572.1,-170.4 L 605.8,-190.1 L 612.6,-160.5 L 709.7,-218.0 L 754.2,-206.5 L 785.3,-262.4 L 831.1,-277.2 L 841.9,-347.8 L 1014.6,-339.6 Z" class="land nc"/>
+<text x="55" y="250" class="statelabel">GEORGIA</text>
+<text x="360" y="55" class="statelabel">N. CAROLINA</text>
+<polyline points="171.8,477.0 164.4,288.0 152.1,222.0 191.5,171.0 280.2,165.0 307.3,150.0 329.5,144.0 334.4,114.0" class="road mtn"/>
+<polyline points="334.4,114.0 263.0,90.0" class="road spur"/>
+<circle cx="171.8" cy="477.0" r="8" class="dot-end"/>
+<text x="184.8" y="481.0" class="ptlabel">From Atlanta (I-575)</text>
+<circle cx="164.4" cy="288.0" r="5" class="dot-charge"/>
+<text x="175.4" y="292.0" class="ptlabel town">Jasper</text>
+<circle cx="152.1" cy="222.0" r="5" class="dot-charge"/>
+<text x="141.1" y="226.0" text-anchor="end" class="ptlabel town">Ellijay</text>
+<circle cx="191.5" cy="171.0" r="6" class="dot-charge"/>
+<text x="182.5" y="160.0" text-anchor="middle" class="ptlabel town">Blue Ridge</text>
+<circle cx="280.2" cy="165.0" r="5" class="dot-charge"/>
+<line x1="280.2" y1="170" x2="262" y2="195" class="leader ga"/>
+<text x="258" y="200" text-anchor="end" class="ptlabel town">Blairsville</text>
+<circle cx="307.3" cy="150.0" r="5" class="dot-charge"/>
+<text x="330" y="205" text-anchor="middle" class="ptlabel town">Young Harris</text>
+<line x1="307.3" y1="155.0" x2="322" y2="196" class="leader ga"/>
+<circle cx="329.5" cy="144.0" r="5" class="dot-charge"/>
+<text x="340.5" y="148.0" class="ptlabel town">Hiawassee</text>
+<circle cx="263.0" cy="90.0" r="6" class="dot-charge"/>
+<text x="263.0" y="79.0" text-anchor="middle" class="ptlabel small">Murphy ⚡</text>
+<circle cx="334.4" cy="114.0" r="9" class="dot-dest"/>
+<text x="347.4" y="118.0" class="ptlabel dest">Hayesville</text>
+<rect x="126.0" y="240.5" width="52" height="19" rx="4" class="shield ga"/><text x="152" y="253.8" text-anchor="middle" class="shield-txt">GA-515</text>
+<line x1="178" y1="250" x2="152.1" y2="235" class="leader ga"/>
+<rect x="222.0" y="120.5" width="46" height="19" rx="4" class="shield ga"/><text x="245" y="133.8" text-anchor="middle" class="shield-txt">US-76</text>
+<line x1="245" y1="139" x2="235.85" y2="165.0" class="leader ga"/>
+<rect x="319.4" y="74.5" width="42" height="19" rx="4" class="shield nc"/><text x="340.4" y="87.8" text-anchor="middle" class="shield-txt">NC-69</text>
+<line x1="340.4" y1="93.0" x2="336.4" y2="106.0" class="leader nc"/>
     </svg>
     <div class="map-legend">
       <span><span class="ld dot-c"></span> Charging</span>
       <span><span class="ld dot-e"></span> Stop / overnight</span>
       <span><span class="ld dot-d"></span> Destination</span>
-      <span class="map-note">Eastern NC &amp; panhandle run off-frame</span>
+      <span class="map-note">Schematic &middot; key roads labeled</span>
     </div>
   </div>
 
@@ -412,10 +496,10 @@
       <div class="node">●</div>
       <div class="stop-card">
         <div class="stop-top">
-          <span class="stop-name">Atlanta — Thompson, Buckhead</span>
+          <span class="stop-name">Atlanta — Kimpton Sylvan, Buckhead</span>
           <div class="badges"><span class="badge b-mile">~460 mi</span></div>
         </div>
-        <div class="stop-body">Arrive Tuesday evening with margin to spare. <strong>Top up to 100% before leaving Wednesday</strong> — Supercharger at Lenox Square is right in Buckhead, walking distance to dinner. This is your last reliable fast-charge before the mountains.</div>
+        <div class="stop-body">Arrive Tuesday evening with margin to spare. For Wednesday's top-up, the <strong>Roswell Rd Supercharger (~2 mi, newer V4, clean, fast)</strong> beats the closer Lenox one, which reviewers flag as old, slow, and hard to find in the garage. <strong>Call the hotel ahead</strong> to ask about valet EV charging if you'd rather wake up topped off — but you don't need it. You'll also pass chargeable towns (Blue Ridge, Ellijay) Wednesday.</div>
       </div>
     </div>
 
@@ -433,19 +517,37 @@
   <!-- DAY 2 -->
   <div class="day-head">
     <span class="day-tag">Wednesday</span>
-    <span class="day-meta">Atlanta → Hayesville · ~100 mi · ~2 hrs</span>
+    <span class="day-meta">Atlanta → Hayesville · via GA-515 · ~120 mi · ~2.5 hrs</span>
   </div>
-  <p class="subtitle" style="margin-top:10px;">The reward leg — short and scenic, up through the North Georgia mountains. No charging stop needed if you left Atlanta full.</p>
+  <p class="subtitle" style="margin-top:10px;">The easy leg. Loop the <strong>west side of Atlanta</strong> on I-285, up I-575 onto <strong>GA-515 (the Georgia Mountain Parkway)</strong> — a four-lane divided highway through valley towns. No switchbacks, real shoulders, gas and food the whole way.</p>
+
+  <div class="callout" style="margin:20px 0;">
+    <h3>⚠ One nav trap: don't let it route you over Blood Mountain</h3>
+    <p>Stay on the <strong>515 corridor through Blue Ridge → Blairsville</strong>. If the Tesla or Google Maps ever tries to "shortcut" you onto <strong>US-19 or US-129 through Dahlonega / Cleveland</strong>, reject it — that's the steep two-lane switchback route over Blood Mountain. The 515 way is longer in miles but easier, calmer, and better with Luca in the car.</p>
+  </div>
 
   <div class="route">
     <div class="stop charge">
       <div class="node">3</div>
       <div class="stop-card">
         <div class="stop-top">
-          <span class="stop-name">Top up — Lenox Square, Buckhead</span>
+          <span class="stop-name">Top up — Roswell Rd Supercharger</span>
           <div class="badges"><span class="badge b-charge">Charge to 100%</span></div>
         </div>
-        <div class="stop-body">Before you roll out. Last fast-charge before the desert. Full battery = comfortable buffer for local driving around Hayesville and Hiawassee all week.</div>
+        <div class="stop-body">~2 mi / 7 min from the hotel — newer V4 chargers, reviewers say fast and no wait (can get busy midday). Better bet than the closer <strong>Lenox Square</strong> Supercharger, which is older, slower (~52–72kW), and notoriously hard to find on the garage's lowest level. Use Lenox only as backup if Roswell's congested.</div>
+      </div>
+    </div>
+    <div class="stop">
+      <div class="node" style="border-color:var(--pine);color:#8aa88d;">◇</div>
+      <div class="stop-card" style="border-left:3px solid var(--pine);">
+        <div class="stop-top">
+          <span class="stop-name">Through the towns</span>
+          <div class="badges">
+            <span class="badge b-break">Optional stop</span>
+            <span class="badge b-mile">GA-515</span>
+          </div>
+        </div>
+        <div class="stop-body">Jasper → Ellijay → <strong>Blue Ridge</strong> → Blairsville → Young Harris → Hiawassee → Hayesville. If you want a real kid-and-stretch break, <strong>Mercier Orchards in Blue Ridge</strong> is the spot — apples, animals, bathrooms. Blue Ridge and Ellijay also have charging if you want a top-off without the full Lenox stop.</div>
       </div>
     </div>
     <div class="stop endpoint">
@@ -455,7 +557,7 @@
           <span class="stop-name">Hayesville, NC</span>
           <div class="badges"><span class="badge b-mile">Arrive</span></div>
         </div>
-        <div class="stop-body">Clay County, far western NC. Cooler at elevation than Tampa — <strong>pack warm layers for the evenings.</strong> Cell coverage is spotty, so download anything you need offline before you arrive.</div>
+        <div class="stop-body">Clay County, far western NC — you'll come in from the Blue Ridge / Hiawassee side. Cooler at elevation than Tampa, so <strong>pack warm layers for the evenings.</strong> Cell coverage is spotty; download anything you need offline before you arrive. Murphy's charging is right nearby on this side.</div>
       </div>
     </div>
   </div>
@@ -484,10 +586,77 @@
       <p>Harrah's Cherokee Valley River, ~25 min away. 24 free Level 2 chargers (~40–50 mi/hr). Park for dinner one evening, gain 80–100+ mi. Your reset if the house outlet falls behind — and it covers the drive home.</p>
     </div>
     <div class="note">
+      <h4>Kimpton Sylvan — a couple of notes</h4>
+      <p>Same Buckhead block as the route already assumes, so charging (Roswell Rd / Lenox) is unchanged. Two small heads-ups from reviews: <strong>coffee is lobby-only, no in-room maker</strong> — worth knowing before an early departure — and ask valet about EV charging if you want an overnight trickle, though Roswell Rd covers you regardless.</p>
+    </div>
+    <div class="note">
       <h4>Dogs boarded</h4>
       <p>Confirm boarding drop-off and pack their food, meds, and bedding.</p>
     </div>
   </div>
+
+  <!-- OPTIONAL STOPS -->
+  <div class="section-label">Optional stops — only if Luca needs one</div>
+  <p class="subtitle" style="margin-top:-4px;margin-bottom:16px;font-size:0.95rem;">The plan holds on its own, but the <strong style="color:var(--paper)">Lake Park → Macon stretch (~160 mi)</strong> is the long gap. These are the good bailout points along I-75 if you need a break between the planned stops.</p>
+
+  <div class="optstop best">
+    <div class="ost-top">
+      <h4>Buc-ee's, Warner Robins <span class="pick">Best family stop</span></h4>
+      <span class="where">~mile 335 · before Macon</span>
+    </div>
+    <p>The giant Buc-ee's — 24/7, famously clean private restrooms, endless food, easy on/off I-75. A genuine event for a kid. Has EV chargers but <strong>not Superchargers</strong>, so treat it as a break, then charge at Macon ~25 min later. If you make one bonus stop all day, make it this.</p>
+  </div>
+
+  <div class="optstop">
+    <div class="ost-top">
+      <h4>Florida Welcome Center, Jennings</h4>
+      <span class="where">~mile 200 · FL/GA line</span>
+    </div>
+    <p>The best pure leg-stretch on Day 1 — free orange juice, very clean restrooms, room to run around, right at the state line. No charging, just a clean easy break before the first Supercharger.</p>
+  </div>
+
+  <div class="optstop">
+    <div class="ost-top">
+      <h4>Tifton Supercharger</h4>
+      <span class="where">~mile 270 · splits the long gap</span>
+    </div>
+    <p>If you'd rather split the charge than do one long Macon stop. Starbucks and fast food walkable. Honest caveat: <strong>no public restroom here</strong> and slower chargers (~70kW) — more a coffee/food stop than a bathroom or fast-charge one.</p>
+  </div>
+
+  <div class="optstop">
+    <div class="ost-top">
+      <h4>Ashburn Supercharger <span style="color:var(--paper-dim);font-weight:400;font-size:0.8rem;">(charging backup)</span></h4>
+      <span class="where">~mile 295</span>
+    </div>
+    <p>Fast — 15+ stalls, often empty, can hit 250kW, Waffle House &amp; McDonald's walkable. The Circle K it sits at is grim, but if you need a quick fast-charge it does the job.</p>
+  </div>
+
+  <div class="optstop">
+    <div class="ost-top">
+      <h4>Mercier Orchards, Blue Ridge <span class="pick">Day 2</span></h4>
+      <span class="where">on the GA-515 leg</span>
+    </div>
+    <p>The standout Day 2 break — huge family-friendly orchard, fresh bakery and cider, tractor ride, outdoor tables, dog-friendly, great views. A real stop, not a gas station. Apples, bathrooms, room to roam.</p>
+  </div>
+
+  <!-- TESLA ADDRESSES -->
+  <div class="section-label">Stops for the Tesla</div>
+  <p class="subtitle" style="margin-top:-4px;margin-bottom:10px;font-size:0.95rem;">Tesla nav adds Superchargers automatically — just set the destination and it does the charging math. Save these as <strong style="color:var(--paper)">Favorites</strong> in the car (or the app) the night before so each is one tap en route. Coordinates are the most reliable way to enter them.</p>
+  <table class="addr-table">
+    <thead>
+      <tr><th>Stop</th><th class="hide-sm">Address</th><th>Lat, Long</th></tr>
+    </thead>
+    <tbody>
+      <tr class="dayrow"><td colspan="3">Day 1 — Davis Islands → Atlanta</td></tr>
+      <tr><td class="stop-c">1 · Lake Park SC</td><td class="hide-sm">1060 Lakes Blvd, Lake Park, GA 31636</td><td class="geo">30.6809, -83.2170</td></tr>
+      <tr><td class="stop-c">2 · Macon SC</td><td class="hide-sm">261 2nd St, Macon, GA 31201</td><td class="geo">32.8381, -83.6278</td></tr>
+      <tr><td class="stop-c">Kimpton Sylvan</td><td class="hide-sm">374 E Paces Ferry Rd NE, Atlanta, GA 30305</td><td class="geo">33.8393, -84.3750</td></tr>
+      <tr class="dayrow"><td colspan="3">Day 2 — Atlanta → Hayesville</td></tr>
+      <tr><td class="stop-c">3 · Roswell Rd SC</td><td class="hide-sm">3714 Roswell Rd NE, Atlanta, GA 30342</td><td class="geo">33.8591, -84.3827</td></tr>
+      <tr><td class="stop-c">Mercier Orchards</td><td class="hide-sm">8660 Blue Ridge Dr, Blue Ridge, GA 30513</td><td class="geo">34.8864, -84.3408</td></tr>
+    </tbody>
+  </table>
+  <p class="table-note">Optional stops if needed: Buc-ee's Warner Robins (7001 Russell Pkwy) · Florida Welcome Center, Jennings · Tifton SC (1204 US-82) · Ashburn SC (E Washington Ave). For a full multi-stop overview you can also drop these into Google Maps — but the Tesla will handle charging on its own.</p>
 
   <footer>
     <div class="legend">
